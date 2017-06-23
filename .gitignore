@@ -22,3 +22,6 @@
 # Ignore idea settings
 .idea
 .rspec
+
+# Ignore local secure settings
+.env.*.secret
