@@ -1,4 +1,5 @@
 require 'airbrake'
+require 'net/http'
 
 class Hooks::TelegramController < BaseApiController
 
@@ -8,7 +9,13 @@ class Hooks::TelegramController < BaseApiController
       update = Telegram::Bot::Types::Update.new(telegram_params)
       Rails.logger.info("Telegram: Update: #{update}")
 
-      render json: {}
+      text = nil
+      if update.message.voice.present?
+        data = TelegramService.voiceMessage(update.message)
+        text = GoogleCloudService.recognize(data)
+      end
+
+      render json: Telegram::Response.new(update.message.chat.id, text)
     rescue => ex
       Rails.logger.warn("Error: #{ex.message}, Stacktrace: #{ex.backtrace}")
       Airbrake.notify(ex, params.to_h)
@@ -24,7 +31,8 @@ class Hooks::TelegramController < BaseApiController
         :text,
         :date,
         from: [:id, :first_name, :last_name, :username, :language_code],
-        chat: [:id, :first_name, :last_name, :username, :type]
+        chat: [:id, :first_name, :last_name, :username, :type],
+        voice: [:duration, :mime_type, :file_id, :file_id]
     ]
 
     params.permit(

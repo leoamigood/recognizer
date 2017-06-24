@@ -23,7 +23,9 @@ gem 'airbrake', '~> 6.1'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem 'attr_extras'
 gem 'telegram-bot-ruby'
+gem 'google-cloud-speech'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

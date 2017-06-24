@@ -12,7 +12,7 @@ default: &default
 
 development:
   <<: *default
-  database: reconizer_development
+  database: recognizer_development
   username: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
   pool: 5
@@ -24,7 +24,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: reconizer_test
+  database: recognizer_test
   username: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
   pool: 5
