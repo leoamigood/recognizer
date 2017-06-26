@@ -10,11 +10,6 @@ class TelegramService
 
       file_path = results['result']['file_path']
 
-      # file = open("/tmp/#{file_id}", 'wb') do |file|
-      #   file << open("https://api.telegram.org/file/bot#{TELEGRAM_TOKEN}/#{file_path}").read
-      # end
-      # file.path
-
       open("https://api.telegram.org/file/bot#{TELEGRAM_TOKEN}/#{file_path}").read
     end
   end

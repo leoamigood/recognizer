@@ -1,0 +1,14 @@
+class CreateUsers < ActiveRecord::Migration[5.1]
+  def change
+    create_table :users do |t|
+      t.integer :ext_id, null: false
+      t.string :source, default: :telegram
+      t.string :first_name
+      t.string :last_name
+      t.string :username
+      t.string :language, default: :en
+
+      t.timestamps null: false
+    end
+  end
+end
