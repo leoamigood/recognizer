@@ -12,8 +12,6 @@ class GoogleCloudService
         audio.grpc.content = content
 
         results = audio.recognize(max_alternatives: 1, profanity_filter: nil)
-        Rails.logger.info("TRANSCRIPT: #{results.first.try(:transcript)}")
-
         results.first.try(:transcript)
       rescue
 

@@ -2,39 +2,20 @@ require 'airbrake'
 require 'net/http'
 
 class Hooks::TelegramController < BaseApiController
-
-  MAX_VOICE_LENGTH = 15
-
   Rails.logger = Logger.new(STDOUT)
   def update
-    message = Telegram::Bot::Types::Update.new(telegram_params).message
-
+    update = Telegram::Bot::Types::Update.new(telegram_params)
     begin
-      text = nil
-      if message.voice.present?
-        if compliant?(message)
-          user = UserService.create_from_telegram(message.from)
-
-          data = TelegramService.voiceMessage(message)
-          text = GoogleCloudService.recognize(data, user.language)
-        else
-          text = 'Voice message is too long. Currently support only messages under 15 seconds' unless compliant?(message)
-        end
-      end
-
-      render json: Telegram::Response.new(message.chat.id, text)
+      response = TelegramService.handle(update.message)
+      render json: Telegram::Response.new(update.message.chat.id, response)
     rescue => ex
       Rails.logger.warn("Error: #{ex.message}, Stacktrace: #{ex.backtrace}")
       Airbrake.notify(ex, params.to_h)
-      render json: Telegram::Response.new(message.chat.id, 'Service is temporary unavailable. Please come later.')
+      render json: Telegram::Response.new(update.message.chat.id, 'Service is temporary unavailable. Please try later.')
     end
   end
 
   private
-
-  def compliant?(message)
-     message.voice.duration < MAX_VOICE_LENGTH
-  end
 
   def telegram_params
     message = [
